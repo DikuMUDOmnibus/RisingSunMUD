@@ -119,10 +119,10 @@ SRC  += scripts/scripts.c       \
 
 
 # the top level directory of python.
-PYTHONTOP = /usr/include
+PYTHONTOP = /usr/include/python2.6
 
 # the folder where python headers are located
-C_FLAGS  += -I$(PYTHONTOP)/python2.4
+C_FLAGS  += -I$(PYTHONTOP)
 
 # libraries we have to include.
-LIBS     += -Xlinker -export-dynamic -lm -ldl -lutil -L/usr/lib/python2.4/config -lpython2.4
+LIBS     += -Xlinker -export-dynamic -lm -ldl -lutil -L/usr/lib/python2.4/config -lpython2.6
