@@ -336,10 +336,10 @@ def account_handler_hook(info):
     sock.push_ih(login_method_handler, login_method_prompt)
     mud.log_string("new socket, %d, attempting to connect" % sock.uid)
     sock.send(mud.get_greeting())
-    sock.send("== Options Are ================================================================")
+    sock.send("== Options ================================================================")
     sock.send("    Load account   : load   <account> <password>")
     sock.send("    Create account : create <account> <password>")
-    sock.send("    Play as guest  : guest")
+    #sock.send("    Play as guest  : guest")
     sock.send("===============================================================================")
     sock.send("")
 
