@@ -260,34 +260,12 @@ def display_acct_chars(sock):
 def acct_main_menu(sock):
     '''displays the main menu for the account and asks for a command'''
     line_buf = "%-38s" % " "
-
-    # make the account menu look pretty
-    img = ["+--------------------------------------+",
-           "|                                      |",
-           "|                                      |",
-           "|                                      |",
-           "|                                      |",
-           "|                                      |",
-           "|                                      |",
-           "|                                      |",
-           "|                                      |",
-           "|                                      |",
-           "|               I M A G E              |",
-           "|                H E R E               |",
-           "|                                      |",
-           "|                                      |",
-           "|                                      |",
-           "|                                      |",
-           "|                                      |",
-           "|                                      |",
-           "|                                      |",
-           "|                                      |",
-           "|                                      |",
-           "|                                      |",
-           "+--------------------------------------+"]
-
     # the lines for displaying our account options
     opts  = [ ]
+    opts.append(line_buf)
+    opts.append(line_buf)
+    opts.append(line_buf)
+    opts.append(line_buf)
     chars = sock.account.characters()
     chars.sort()
     if len(chars) > 0:
@@ -300,28 +278,28 @@ def acct_main_menu(sock):
     opts.append("  {wAccount Management:                 ")
     opts.append("    {n[{cP{n]assword change                 ")
     opts.append("    {n[{cN{n]ew character                   ")
-    opts.append("    {n[{cL{n]oad character <name>           ")
+    #opts.append("    {n[{cL{n]oad character <name>           ")
     opts.append(line_buf)
     opts.append(line_buf)
     opts.append(line_buf)
 
     # fill up our height to be in line with the image
-    while len(opts) < len(img) - 2:
-        opts.insert(0, line_buf)
+    #while len(opts) < len(img) - 2:
+    #    opts.insert(0, line_buf)
 
     # append our title
-    opts.insert(1, "            {nW E L C O M E  T O        ")
-    opts.insert(2, "             {nN A K E D M U D          ")
+    opts.insert(1, "            {nThe Rising Sun        ")
+    opts.insert(2, "            " + sock.account.name)
             
     # display all of our info
     sock.send("")
-    for i in range(max(len(opts), len(img))):
+    for i in range(len(opts)):
         if i < len(opts):
             sock.send_raw(opts[i])
         else:
             sock.send_raw(line_buf)
-        if i < len(img):
-            sock.send_raw("{n%s" % img[i])
+        #if i < len(img):
+        #    sock.send_raw("{n%s" % img[i])
         sock.send("")
         
     sock.send_raw("{nEnter choice, or Q to quit: ")
