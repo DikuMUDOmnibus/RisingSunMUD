@@ -55,6 +55,9 @@
 #ifdef MODULE_ALIAS
 #include "alias/alias.h"
 #endif
+#ifdef MODULE_STATS
+#include "stats/stats.h"
+#endif
 
 
 // local procedures
@@ -261,6 +264,11 @@ int main(int argc, char **argv)
 #ifdef MODULE_HELP2
   log_string("Initializing helpfiles.");
   init_help();
+#endif
+
+#ifdef MODULE_STATS
+  log_string("Initializing stats.");
+  init_stats();
 #endif
 
 
