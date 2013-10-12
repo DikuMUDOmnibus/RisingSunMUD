@@ -46,6 +46,7 @@ int rand_range(int min_n, int max_n)
 // Provide STAT_DATA functions
 // Create a new STAT_DATA
 STAT_DATA *newStatData() {
+  log_string("new STAT_DATA");
   STAT_DATA *new_stat_data = malloc(sizeof(STAT_DATA));
   return new_stat_data;
 }
@@ -121,16 +122,16 @@ void deleteStatAuxData(STAT_AUX_DATA *data) {
 // Copy one STAT_AUX_DATA to another
 // Normally named statAuxDataCopyTo(*STAT_AUX_DATA, *STAT_AUX_DATA)
 void copyStatAuxData(STAT_AUX_DATA *from, STAT_AUX_DATA *to) { // TODO Check that from values exist
-    from->health = to->health;
-	from->fatigue = to->fatigue;
-	from->strength = to->strength;
-	from->endurance = to->endurance;
-	from->willpower = to->willpower;
-	from->focus = to->focus;
-	from->wisdom = to->wisdom;
-	from->charisma = to->charisma;
-	from->fatigue = to->speed;
-	from->agility = to->agility;
+  from->health = to->health;
+  from->fatigue = to->fatigue;
+  from->strength = to->strength;
+  from->endurance = to->endurance;
+  from->willpower = to->willpower;
+  from->focus = to->focus;
+  from->wisdom = to->wisdom;
+  from->charisma = to->charisma;
+  from->fatigue = to->speed;
+  from->agility = to->agility;
 }
 
 // Duplicate a STAT_AUX_DATA
@@ -145,16 +146,16 @@ STAT_AUX_DATA *duplicateStatAuxData(STAT_AUX_DATA *from) {
 // Normally named statAuxDataStore(*STAT_AUX_DATA)
 STORAGE_SET *storeStatAuxData(STAT_AUX_DATA *data) {
   STORAGE_SET *storage = new_storage_set();
-  store_int(storage, "health", data->health);
-  store_int(storage, "fatigue", data->fatigue);
-  store_int(storage, "strength", data->strength);
-  store_int(storage, "endurance", data->endurance);
-  store_int(storage, "speed", data->speed);
-  store_int(storage, "agility", data->agility);
-  store_int(storage, "focus", data->focus);
-  store_int(storage, "willpower", data->willpower);
-  store_int(storage, "wisdom", data->wisdom);
-  store_int(storage, "charisma", data->charisma);
+  if (data->health) store_int(storage, "health", data->health);
+  if (data->fatigue) store_int(storage, "fatigue", data->fatigue);
+  if (data->strength) store_int(storage, "strength", data->strength);
+  if (data->endurance) store_int(storage, "endurance", data->endurance);
+  if (data->speed) store_int(storage, "speed", data->speed);
+  if (data->agility) store_int(storage, "agility", data->agility);
+  if (data->focus) store_int(storage, "focus", data->focus);
+  if (data->willpower) store_int(storage, "willpower", data->willpower);
+  if (data->wisdom) store_int(storage, "wisdom", data->wisdom);
+  if (data->charisma) store_int(storage, "charisma", data->charisma);
   return storage;
 }
 
@@ -162,16 +163,16 @@ STORAGE_SET *storeStatAuxData(STAT_AUX_DATA *data) {
 // Normally named statAuxDataRead(*STORAGE_SET)
 STAT_AUX_DATA *readStatAuxData(STORAGE_SET *storage) {
   STAT_AUX_DATA *data = malloc(sizeof(STAT_AUX_DATA));
-  data->health = read_int(storage, "health");
-  data->fatigue = read_int(storage, "fatigue");
-  data->strength = read_int(storage, "strength");
-  data->endurance = read_int(storage, "endurance");
-  data->speed = read_int(storage, "speed");
-  data->agility = read_int(storage, "agility");
-  data->focus = read_int(storage, "focus");
-  data->willpower = read_int(storage, "willpower");
-  data->charisma = read_int(storage, "charisma");
-  data->wisdom = read_int(storage, "wisdom");
+  if (read_int(storage, "health")) data->health = read_int(storage, "health");
+  if (read_int(storage, "fatigue")) data->fatigue = read_int(storage, "fatigue");
+  if (read_int(storage, "strength")) data->strength = read_int(storage, "strength");
+  if (read_int(storage, "endurance")) data->endurance = read_int(storage, "endurance");
+  if (read_int(storage, "speed")) data->speed = read_int(storage, "speed");
+  if (read_int(storage, "agility")) data->agility = read_int(storage, "agility");
+  if (read_int(storage, "focus")) data->focus = read_int(storage, "focus");
+  if (read_int(storage, "willpower")) data->willpower = read_int(storage, "willpower");
+  if (read_int(storage, "charisma")) data->charisma = read_int(storage, "charisma");
+  if (read_int(storage, "wisdom")) data->wisdom = read_int(storage, "wisdom");
   return data;
 }
 
@@ -470,8 +471,7 @@ void initCharHook(const char *info) {
 
 // Load module
 void init_stats(void) {
-  log_string("Initializing stats module");
-  
+    
   // Provide auxiliary data
   auxiliariesInstall("stat_aux_data",
     newAuxiliaryFuncs(AUXILIARY_TYPE_CHAR,

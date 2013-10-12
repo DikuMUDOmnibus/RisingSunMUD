@@ -58,6 +58,9 @@
 #ifdef MODULE_STATS
 #include "stats/stats.h"
 #endif
+#ifdef MODULE_DESCRIPTIONS
+#include "descriptions/descriptions.h"
+#endif
 
 
 // local procedures
@@ -269,6 +272,11 @@ int main(int argc, char **argv)
 #ifdef MODULE_STATS
   log_string("Initializing stats.");
   init_stats();
+#endif
+
+#ifdef MODULE_DESCRIPTIONS
+  log_string("Initializing descriptions.");
+  init_descriptions();
 #endif
 
 
