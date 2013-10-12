@@ -61,6 +61,9 @@
 #ifdef MODULE_DESCRIPTIONS
 #include "descriptions/descriptions.h"
 #endif
+#ifdef MODULE_CLANS
+#include "clans/clans.h"
+#endif
 
 
 // local procedures
@@ -277,6 +280,11 @@ int main(int argc, char **argv)
 #ifdef MODULE_DESCRIPTIONS
   log_string("Initializing descriptions.");
   init_descriptions();
+#endif
+
+#ifdef MODULE_CLANS
+  log_string("Initializing clans.");
+  init_clans();
 #endif
 
 

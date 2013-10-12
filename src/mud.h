@@ -34,6 +34,7 @@
 #define MODULE_TIME
 #define MODULE_STATS
 #define MODULE_DESCRIPTIONS
+#define MODULE_CLANS
 
 
 

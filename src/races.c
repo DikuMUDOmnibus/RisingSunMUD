@@ -86,7 +86,7 @@ void init_races() {
   //                                                                    100
 
   // add the basic races
-  add_race("human", "hum", body, TRUE);
+  //add_race("human", "hum", body, TRUE);
   //********************************************************************
   // If you are wanting to add new, non-stock races it is suggested
   // you do so through a module and import them with add_race instead
@@ -125,7 +125,7 @@ const char *raceGetAbbrev(const char *name) {
 }
 
 const char *raceDefault() {
-  return "human";
+  return "izu";
 }
 
 const char *raceGetList(bool pc_only) {
