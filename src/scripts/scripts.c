@@ -146,13 +146,13 @@ void expand_char_dynamic_descs(const char *info) {
   // if we're an NPC, do some special work for displaying us. We don't do 
   // dynamic descs for PCs because they will probably be describing themselves,
   // and we don't want to give them access to the scripting language.
-  if(charIsNPC(me)) {
+  //if(charIsNPC(me)) {
     PyObject *pyme = charGetPyForm(me);
     char   *locale = strdup(get_key_locale(charGetClass(me))); 
     expand_dynamic_descs(charGetLookBuffer(ch), pyme, ch, locale);
     Py_DECREF(pyme);
     free(locale);
-  }
+  //}
 }
 
 void  expand_obj_dynamic_descs(const char *info) {
