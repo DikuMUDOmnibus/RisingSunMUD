@@ -64,6 +64,9 @@
 #ifdef MODULE_CLANS
 #include "clans/clans.h"
 #endif
+#ifdef MODULE_BUILDWALK
+#include "buildwalk/buildwalk.h"
+#endif
 
 
 // local procedures
@@ -285,6 +288,11 @@ int main(int argc, char **argv)
 #ifdef MODULE_CLANS
   log_string("Initializing clans.");
   init_clans();
+#endif
+
+#ifdef MODULE_BUILDWALK
+  log_string("Initializing buildwalk...");
+  init_buildwalk();
 #endif
 
 

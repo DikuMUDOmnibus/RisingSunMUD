@@ -141,7 +141,13 @@ def try_move(ch, dir, mssg = False):
     
     # did we find an exit?
     if ex == None or not ch.cansee(ex):
-        ch.send("Alas, there is no exit in that direction.")
+        if not ch.isInGroup("builder"):
+            ch.send("Alas, there is no exit in that direction.")
+        elif ex != None and not ch.cansee(ex):
+            ch.send("There is an exit, but you can't see it.")
+            ch.send("Turn on your wizard lense!")
+        else:
+            hooks.run("try_buildwalk", hooks.build_info("ch str", (ch, dir)))
     elif ex.is_closed:
         ch.send("You will have to open " + exname + " first.")
     elif ex.dest == None:
@@ -194,9 +200,7 @@ def cmd_move(ch, cmd, arg):
        specified direction.'''
     # cmd_move is the basic entry to all of the movement utilities.
     # See try_move() in movement.py
-    try_move_mssg(ch, cmd)
-
-
+    try_move_mssg(ch, cmd)    
 
 ################################################################################
 # mud commands

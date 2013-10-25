@@ -4,4 +4,9 @@
 // calling it will initialize the mail module for use.
 void init_descriptions(void);
 // TODO Prototype all the functions provided by descriptions.c
+
+struct DESC_AUX_DATA;
+
+const char *charGetBodyType(CHAR_DATA *);
+
 #endif // DESCRIPTIONS_H

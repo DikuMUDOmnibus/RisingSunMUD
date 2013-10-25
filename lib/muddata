@@ -1,4 +1,4 @@
-start_room       : intro@tutorial
+start_room       : mainsouth_1@edo1
 pulses_per_second: 10
 puid             : 0
 -

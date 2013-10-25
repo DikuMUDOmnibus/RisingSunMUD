@@ -35,6 +35,7 @@
 #define MODULE_STATS
 #define MODULE_CLANS
 #define MODULE_DESCRIPTIONS
+#define MODULE_BUILDWALK
 
 
 

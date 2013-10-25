@@ -465,9 +465,9 @@ void initDescHook(const char *info) {
   hookParseInfo(info, &ch);
   //DESC_AUX_DATA *data = charGetAuxiliaryData(ch, "desc_aux_data");
   //char *script_data = "I am";
-  char *description = 
-    "[desc_data = me.getAuxiliary(\"desc_aux_data\")][if desc_data.height==\"average\"]	You see a[else]You see a [desc_data.height][/if] ";
-  charSetDesc(ch, description);
+  // char *description = 
+    // "[desc_data = me.getAuxiliary(\"desc_aux_data\")][if desc_data.height==\"average\"]	You see a[else]You see a [desc_data.height][/if] ";
+  // charSetDesc(ch, description);
 }
 
 // Initiate the module
@@ -507,5 +507,5 @@ void init_descriptions() {
   add_set("chin", SET_CHAR, SET_TYPE_STRING, charSetChin, NULL);
   
   // Hook into the character initiation
-  hookAdd("init_player", initDescHook);
+  //hookAdd("init_player", initDescHook);
 }

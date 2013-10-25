@@ -1,3 +1,5 @@
+#include <Python.h>
+
 #include "../mud.h"
 #include "../save.h"
 #include "../character.h"
@@ -5,7 +7,10 @@
 #include "../auxiliary.h"
 #include "../hooks.h"
 #include "../set_val/set_val.h"
+#include "../scripts/pychar.h"
+
 #include "stats.h"
+#include "../descriptions/descriptions.h"
 
 // Define our data structures
 typedef struct {
@@ -428,7 +433,253 @@ void charSetCharisma(CHAR_DATA *ch, int charisma) {
   }
 }
 
-void rollStatsForChar(CHAR_DATA *ch) {
+// This should be defined in pychar.h, but we don't want to change their files
+// Maybe we will if this keeps being needed
+typedef struct {
+  PyObject_HEAD
+  int uid;
+} PyChar;
+
+// Python getter and setters
+// Getters
+PyObject *pyCharGetStrength(PyChar *self, void *closure) {
+  CHAR_DATA *ch = PyChar_AsChar((PyObject *)self);
+  PyObject *strength = NULL;
+  if(ch != NULL) strength = Py_BuildValue("i", charGetStrength(ch));
+  return strength;
+}
+
+PyObject *pyCharGetEndurance(PyChar *self, void *closure) {
+  CHAR_DATA *ch = PyChar_AsChar((PyObject *)self);
+  PyObject *endurance = NULL;
+  if(ch != NULL) endurance = Py_BuildValue("i", charGetEndurance(ch));
+  return endurance;
+}
+
+PyObject *pyCharGetSpeed(PyChar *self, void *closure) {
+  CHAR_DATA *ch = PyChar_AsChar((PyObject *)self);
+  PyObject *speed = NULL;
+  if(ch != NULL) speed = Py_BuildValue("i", charGetSpeed(ch));
+  return speed;
+}
+
+PyObject *pyCharGetAgility(PyChar *self, void *closure) {
+  CHAR_DATA *ch = PyChar_AsChar((PyObject *)self);
+  PyObject *agility = NULL;
+  if(ch != NULL) agility = Py_BuildValue("i", charGetAgility(ch));
+  return agility;
+}
+
+PyObject *pyCharGetWillpower(PyChar *self, void *closure) {
+  CHAR_DATA *ch = PyChar_AsChar((PyObject *)self);
+  PyObject *willpower = NULL;
+  if(ch != NULL) willpower = Py_BuildValue("i", charGetWillpower(ch));
+  return willpower;
+}
+
+PyObject *pyCharGetFocus(PyChar *self, void *closure) {
+  CHAR_DATA *ch = PyChar_AsChar((PyObject *)self);
+  PyObject *focus = NULL;
+  if(ch != NULL) focus = Py_BuildValue("i", charGetFocus(ch));
+  return focus;
+}
+
+PyObject *pyCharGetWisdom(PyChar *self, void *closure) {
+  CHAR_DATA *ch = PyChar_AsChar((PyObject *)self);
+  PyObject *wisdom = NULL;
+  if(ch != NULL) wisdom = Py_BuildValue("i", charGetWisdom(ch));
+  return wisdom;
+}
+
+PyObject *pyCharGetCharisma(PyChar *self, void *closure) {
+  CHAR_DATA *ch = PyChar_AsChar((PyObject *)self);
+  PyObject *charisma = NULL;
+  if(ch != NULL) charisma = Py_BuildValue("i", charGetCharisma(ch));
+  return charisma;
+}
+
+PyObject *pyCharGetHealth(PyChar *self, void *closure) {
+  CHAR_DATA *ch = PyChar_AsChar((PyObject *)self);
+  PyObject *health = NULL;
+  if(ch != NULL) health = Py_BuildValue("i", charGetHealth(ch));
+  return health;
+}
+
+PyObject *pyCharGetMaxHealth(PyChar *self, void *closure) {
+  CHAR_DATA *ch = PyChar_AsChar((PyObject *)self);
+  PyObject *max_health = NULL;
+  if(ch != NULL) max_health = Py_BuildValue("i", charGetMaxHealth(ch));
+  return max_health;
+}
+
+PyObject *pyCharGetFatigue(PyChar *self, void *closure) {
+  CHAR_DATA *ch = PyChar_AsChar((PyObject *)self);
+  PyObject *fatigue = NULL;
+  if(ch != NULL) fatigue = Py_BuildValue("i", charGetFatigue(ch));
+  return fatigue;
+}
+
+PyObject *pyCharGetMaxFatigue(PyChar *self, void *closure) {
+  CHAR_DATA *ch = PyChar_AsChar((PyObject *)self);
+  PyObject *max_fatigue = NULL;
+  if(ch != NULL) max_fatigue = Py_BuildValue("i", charGetMaxFatigue(ch));
+  return max_fatigue;
+}
+
+PyObject *pyCharGetStrengthWord(PyChar *self, void *closure) {
+  CHAR_DATA *ch = PyChar_AsChar((PyObject *)self);
+  PyObject *strength_word = NULL;
+  if(ch != NULL) strength_word = Py_BuildValue("z", charGetStrengthWord(ch));
+  return strength_word;
+}
+
+PyObject *pyCharGetEnduranceWord(PyChar *self, void *closure) {
+  CHAR_DATA *ch = PyChar_AsChar((PyObject *)self);
+  PyObject *endurance_word = NULL;
+  if(ch != NULL) endurance_word = Py_BuildValue("z", charGetEnduranceWord(ch));
+  return endurance_word;
+}
+
+PyObject *pyCharGetSpeedWord(PyChar *self, void *closure) {
+  CHAR_DATA *ch = PyChar_AsChar((PyObject *)self);
+  PyObject *speed_word = NULL;
+  if(ch != NULL) speed_word = Py_BuildValue("z", charGetSpeedWord(ch));
+  return speed_word;
+}
+
+PyObject *pyCharGetAgilityWord(PyChar *self, void *closure) {
+  CHAR_DATA *ch = PyChar_AsChar((PyObject *)self);
+  PyObject *agility_word = NULL;
+  if(ch != NULL) agility_word = Py_BuildValue("z", charGetAgilityWord(ch));
+  return agility_word;
+}
+
+PyObject *pyCharGetWillpowerWord(PyChar *self, void *closure) {
+  CHAR_DATA *ch = PyChar_AsChar((PyObject *)self);
+  PyObject *willpower_word = NULL;
+  if(ch != NULL) willpower_word = Py_BuildValue("z", charGetWillpowerWord(ch));
+  return willpower_word;
+}
+
+PyObject *pyCharGetFocusWord(PyChar *self, void *closure) {
+  CHAR_DATA *ch = PyChar_AsChar((PyObject *)self);
+  PyObject *focus_word = NULL;
+  if(ch != NULL) focus_word = Py_BuildValue("z", charGetFocusWord(ch));
+  return focus_word;
+}
+
+PyObject *pyCharGetCharismaWord(PyChar *self, void *closure) {
+  CHAR_DATA *ch = PyChar_AsChar((PyObject *)self);
+  PyObject *charisma_word = NULL;
+  if(ch != NULL) charisma_word = Py_BuildValue("z", charGetCharismaWord(ch));
+  return charisma_word;
+}
+
+PyObject *pyCharGetWisdomWord(PyChar *self, void *closure) {
+  CHAR_DATA *ch = PyChar_AsChar((PyObject *)self);
+  PyObject *wisdom_word = NULL;
+  if(ch != NULL) wisdom_word = Py_BuildValue("z", charGetWisdomWord(ch));
+  return wisdom_word;
+}
+
+// Setters
+void *pyCharSetStrength(PyChar *self, PyObject *value, void *closure) {
+  CHAR_DATA *ch = PyChar_AsChar((PyObject *)self);
+  if (ch != NULL) {
+    charSetStrength(ch, PyInt_AsLong(value));
+  }
+  return NULL;
+}
+
+void *pyCharSetEndurance(PyChar *self, PyObject *value, void *closure) {
+  CHAR_DATA *ch = PyChar_AsChar((PyObject *)self);
+  if (ch != NULL) {
+    charSetEndurance(ch, PyInt_AsLong(value));
+  }
+  return NULL;
+}
+
+void *pyCharSetSpeed(PyChar *self, PyObject *value, void *closure) {
+  CHAR_DATA *ch = PyChar_AsChar((PyObject *)self);
+  if (ch != NULL) {
+    charSetSpeed(ch, PyInt_AsLong(value));
+  }
+  return NULL;
+}
+
+void *pyCharSetAgility(PyChar *self, PyObject *value, void *closure) {
+  CHAR_DATA *ch = PyChar_AsChar((PyObject *)self);
+  if (ch != NULL) {
+    charSetAgility(ch, PyInt_AsLong(value));
+  }
+  return NULL;
+}
+
+void *pyCharSetWillpower(PyChar *self, PyObject *value, void *closure) {
+  CHAR_DATA *ch = PyChar_AsChar((PyObject *)self);
+  if (ch != NULL) {
+    charSetWillpower(ch, PyInt_AsLong(value));
+  }
+  return NULL;
+}
+
+void *pyCharSetFocus(PyChar *self, PyObject *value, void *closure) {
+  CHAR_DATA *ch = PyChar_AsChar((PyObject *)self);
+  if (ch != NULL) {
+    charSetFocus(ch, PyInt_AsLong(value));
+  }
+  return NULL;
+}
+
+void *pyCharSetWisdom(PyChar *self, PyObject *value, void *closure) {
+  CHAR_DATA *ch = PyChar_AsChar((PyObject *)self);
+  if (ch != NULL) {
+    charSetWisdom(ch, PyInt_AsLong(value));
+  }
+  return NULL;
+}
+
+void *pyCharSetCharisma(PyChar *self, PyObject *value, void *closure) {
+  CHAR_DATA *ch = PyChar_AsChar((PyObject *)self);
+  if (ch != NULL) {
+    charSetCharisma(ch, PyInt_AsLong(value));
+  }
+  return NULL;
+}
+
+void *pyCharSetHealth(PyChar *self, PyObject *value, void *closure) {
+  CHAR_DATA *ch = PyChar_AsChar((PyObject *)self);
+  if (ch != NULL) {
+    charSetHealth(ch, PyInt_AsLong(value));
+  }
+  return NULL;
+}
+
+void *pyCharSetMaxHealth(PyChar *self, PyObject *value, void *closure) {
+  CHAR_DATA *ch = PyChar_AsChar((PyObject *)self);
+  if (ch != NULL) {
+    charSetMaxHealth(ch, PyInt_AsLong(value));
+  }
+  return NULL;
+}
+
+void *pyCharSetMaxFatigue(PyChar *self, PyObject *value, void *closure) {
+  CHAR_DATA *ch = PyChar_AsChar((PyObject *)self);
+  if (ch != NULL) {
+    charSetMaxFatigue(ch, PyInt_AsLong(value));
+  }
+  return NULL;
+}
+
+void *pyCharSetFatigue(PyChar *self, PyObject *value, void *closure) {
+  CHAR_DATA *ch = PyChar_AsChar((PyObject *)self);
+  if (ch != NULL) {
+    charSetFatigue(ch, PyInt_AsLong(value));
+  }
+  return NULL;
+}
+
+void rollStatsForChar(CHAR_DATA *ch) { // If we add rerolls to character generator, this will move to Python
   charSetEndurance(ch, rand_range(1, 100));
   charSetHealth(ch, charGetMaxHealth(ch));
   charSetFatigue(ch, charGetMaxFatigue(ch));
@@ -439,6 +690,76 @@ void rollStatsForChar(CHAR_DATA *ch) {
   charSetFocus(ch, rand_range(1, 100));
   charSetWillpower(ch, rand_range(1, 100));
   charSetCharisma(ch, rand_range(1, 100));
+  // TODO Fit these to rules
+  
+  // Set bonuses based on body type.
+  const char *body_type = charGetBodyType(ch);
+  // This many string comparisons may be slow, perhaps consider doing this in Python anyway
+  if ( 0 == strcmp("athletic", body_type) ) {
+    charSetSpeed(ch, charGetSpeed(ch) + 5);
+	charSetAgility(ch, charGetAgility(ch) + 5);
+	charSetCharisma(ch, charGetCharisma(ch) + 5);
+  }
+  if ( 0 == strcmp("average", body_type) ) {
+    charSetFocus(ch, charGetFocus(ch) + 10);
+  }
+  if ( 0 == strcmp("bony", body_type) ) {
+    charSetStrength(ch, charGetStrength(ch) - 10);
+  }
+  if ( 0 == strcmp("burly", body_type) ) {
+    charSetEndurance(ch, charGetEndurance(ch) + 10);
+  }
+  if ( 0 == strcmp("chubby", body_type) ) {
+    charSetSpeed(ch, charGetSpeed(ch) - 10);
+	charSetAgility(ch, charGetAgility(ch) - 10);
+  }
+  if ( 0 == strcmp("curvaceous", body_type) ) {
+    charSetCharisma(ch, charGetCharisma(ch) + 10);
+  }
+  if ( 0 == strcmp("heavy", body_type) ) {
+    charSetSpeed(ch, charGetSpeed(ch) - 10);
+  }
+  if ( 0 == strcmp("large", body_type) ) {
+    charSetSpeed(ch, charGetSpeed(ch) - 5);
+	charSetStrength(ch, charGetStrength(ch) + 10);
+  }
+  if ( 0 == strcmp("lean", body_type) ) {
+    charSetSpeed(ch, charGetSpeed(ch) + 5);
+	charSetCharisma(ch, charGetCharisma(ch) + 5);
+  }
+  if ( 0 == strcmp("muscular", body_type) ) {
+    charSetEndurance(ch, charGetEndurance(ch) + 5);
+	charSetCharisma(ch, charGetCharisma(ch) + 5);
+	charSetStrength(ch, charGetStrength(ch) + 10);
+  }
+  if ( 0 == strcmp("rugged", body_type) ) {
+    charSetEndurance(ch, charGetEndurance(ch) + 10);
+	charSetCharisma(ch, charGetCharisma(ch) - 5);
+  }
+  if ( 0 == strcmp("skinny", body_type) ) {
+    charSetFocus(ch, charGetFocus(ch) + 5);
+  }
+  if ( 0 == strcmp("slender", body_type) ) {
+    charSetAgility(ch, charGetAgility(ch) + 5);
+	charSetCharisma(ch, charGetCharisma(ch) + 5);
+  }
+  
+  // Set bonuses based on clan
+  if ( 0 == strcmp("izu", charGetRace(ch)) ) {
+    charSetSpeed(ch, charGetSpeed(ch) + 10);
+  }
+  if ( 0 == strcmp("kai", charGetRace(ch)) ) {
+    charSetWisdom(ch, charGetWisdom(ch) + 10);
+  }
+  if ( 0 == strcmp("hida", charGetRace(ch)) ) {
+    charSetEndurance(ch, charGetEndurance(ch) + 10);
+  }
+  if ( 0 == strcmp("kasuza", charGetRace(ch)) ) {
+    charSetFocus(ch, charGetFocus(ch) + 10);
+  }
+  if ( 0 == strcmp("akita", charGetRace(ch)) ) {
+    charSetAgility(ch, charGetAgility(ch) + 10);
+  }
 }
 
 // Define the command to view stats
@@ -484,6 +805,28 @@ void init_stats(void) {
 	
   // Add the commands defined in this module to the game
   add_cmd("stats", NULL, cmd_stats, "player", FALSE);
+  
+  // Add Python getters and setters to PyChar object
+  PyChar_addGetSetter("strength", pyCharGetStrength, pyCharSetStrength, "Manages character's strength");
+  PyChar_addGetSetter("endurance", pyCharGetEndurance, pyCharSetEndurance, "Manages character's endurance");
+  PyChar_addGetSetter("speed", pyCharGetSpeed, pyCharSetSpeed, "Manages character's speed");
+  PyChar_addGetSetter("agility", pyCharGetAgility, pyCharSetAgility, "Manages character's agility");
+  PyChar_addGetSetter("willpower", pyCharGetWillpower, pyCharSetWillpower, "Manages character's willpower");
+  PyChar_addGetSetter("focus", pyCharGetFocus, pyCharSetFocus, "Manages character's focus");
+  PyChar_addGetSetter("charisma", pyCharGetCharisma, pyCharSetCharisma, "Manages character's charisma");
+  PyChar_addGetSetter("wisdomw", pyCharGetWisdom, pyCharSetWisdom, "Manages character's wisdom");
+  PyChar_addGetSetter("max_health", pyCharGetMaxHealth, pyCharSetMaxHealth, "Manages character's maximum health");
+  PyChar_addGetSetter("health", pyCharGetHealth, pyCharSetHealth, "Manages character's health");
+  PyChar_addGetSetter("max_fatigue", pyCharGetMaxFatigue, pyCharSetMaxFatigue, "Manages character's maximum fatigue");
+  PyChar_addGetSetter("fatigue", pyCharGetFatigue, pyCharSetFatigue, "Manages character's fatigue");
+  PyChar_addGetSetter("strength_word", pyCharGetStrengthWord, NULL, "Displays character's strength word");
+  PyChar_addGetSetter("endurance_word", pyCharGetEnduranceWord, NULL, "Displays character's endurance word");
+  PyChar_addGetSetter("speed_word", pyCharGetSpeedWord, NULL, "Displays character's speed word");
+  PyChar_addGetSetter("agility_word", pyCharGetAgilityWord, NULL, "Displays character's agility word");
+  PyChar_addGetSetter("willpower_word", pyCharGetWillpowerWord, NULL, "Displays character's willpower word");
+  PyChar_addGetSetter("focus_word", pyCharGetFocusWord, NULL, "Displays character's focus word");
+  PyChar_addGetSetter("charisma_word", pyCharGetCharismaWord, NULL, "Displays character's charisma word");
+  PyChar_addGetSetter("wisdom_word", pyCharGetWisdomWord, NULL, "Displays character's wisdom word");
   
   // Add "set" fields for these attributes
   add_set("max_health", SET_CHAR, SET_TYPE_INT, charSetMaxHealth, NULL);
