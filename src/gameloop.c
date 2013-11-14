@@ -67,6 +67,9 @@
 #ifdef MODULE_BUILDWALK
 #include "buildwalk/buildwalk.h"
 #endif
+#ifdef MODULE_BASIC_COMBAT
+#include "basic_combat/basic_combat.h"
+#endif
 
 
 // local procedures
@@ -295,6 +298,10 @@ int main(int argc, char **argv)
   init_buildwalk();
 #endif
 
+#ifdef MODULE_BASIC_COMBAT
+  log_string("Initializing basic combat...");
+  init_basic_combat();
+#endif
 
 
   /**********************************************************************/

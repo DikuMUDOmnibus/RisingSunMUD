@@ -301,7 +301,7 @@ void PyHooks_Monitor(const char *type, const char *info) {
       PyObject *retval  = PyEval_CallObject(func, arglist);
       // check for an error:
       if(retval == NULL)
-	log_pyerr("Error running Python hook");
+	    log_pyerr("Error running Python hook");
 
       // garbage collection
       Py_XDECREF(retval);

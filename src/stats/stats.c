@@ -43,6 +43,10 @@ typedef struct {
   int charisma;
 } STAT_AUX_DATA;
 
+// TODO Find a way to pass these instead
+int stats[8];
+char *names[8];
+
 int rand_range(int min_n, int max_n)
 {
   return rand() % (max_n - min_n + 1) + min_n;
@@ -66,7 +70,9 @@ void deleteStatData(STAT_DATA *data) {
 STAT_DATA *copyStatData(STAT_DATA *data) {
   STAT_DATA *new_data = malloc(sizeof(STAT_DATA));
   new_data->health = data->health;
+  new_data->current_health = data->current_health;
   new_data->fatigue = data->fatigue;
+  new_data->current_fatigue = data->current_fatigue;
   new_data->strength = data->strength;
   new_data->endurance = data->endurance;
   new_data->speed = data->speed;
@@ -82,6 +88,7 @@ STAT_DATA *copyStatData(STAT_DATA *data) {
 // Normally named statRead(*STORAGE_SET)
 STAT_DATA *readStatData(STORAGE_SET *set) {
   STAT_DATA *new_data = malloc(sizeof(STAT_DATA));
+  new_data->health = read_int(set, "health");
   new_data->health = read_int(set, "health");
   new_data->fatigue = read_int(set, "fatigue");
   new_data->strength = read_int(set, "strength");
@@ -127,16 +134,18 @@ void deleteStatAuxData(STAT_AUX_DATA *data) {
 // Copy one STAT_AUX_DATA to another
 // Normally named statAuxDataCopyTo(*STAT_AUX_DATA, *STAT_AUX_DATA)
 void copyStatAuxData(STAT_AUX_DATA *from, STAT_AUX_DATA *to) { // TODO Check that from values exist
-  from->health = to->health;
-  from->fatigue = to->fatigue;
-  from->strength = to->strength;
-  from->endurance = to->endurance;
-  from->willpower = to->willpower;
-  from->focus = to->focus;
-  from->wisdom = to->wisdom;
-  from->charisma = to->charisma;
-  from->fatigue = to->speed;
-  from->agility = to->agility;
+  to->health = from->health;
+  to->current_health = from->current_health;
+  to->fatigue = from->fatigue;
+  to->current_fatigue = from->current_fatigue;
+  to->strength = from->strength;
+  to->endurance = from->endurance;
+  to->willpower = from->willpower;
+  to->focus = from->focus;
+  to->wisdom = from->wisdom;
+  to->charisma = from->charisma;
+  to->fatigue = from->speed;
+  to->agility = from->agility;
 }
 
 // Duplicate a STAT_AUX_DATA
@@ -152,7 +161,9 @@ STAT_AUX_DATA *duplicateStatAuxData(STAT_AUX_DATA *from) {
 STORAGE_SET *storeStatAuxData(STAT_AUX_DATA *data) {
   STORAGE_SET *storage = new_storage_set();
   if (data->health) store_int(storage, "health", data->health);
+  if (data->current_health) store_int(storage, "current_health", data->current_health);
   if (data->fatigue) store_int(storage, "fatigue", data->fatigue);
+  if (data->current_fatigue) store_int(storage, "current_fatigue", data->current_fatigue);
   if (data->strength) store_int(storage, "strength", data->strength);
   if (data->endurance) store_int(storage, "endurance", data->endurance);
   if (data->speed) store_int(storage, "speed", data->speed);
@@ -169,7 +180,9 @@ STORAGE_SET *storeStatAuxData(STAT_AUX_DATA *data) {
 STAT_AUX_DATA *readStatAuxData(STORAGE_SET *storage) {
   STAT_AUX_DATA *data = malloc(sizeof(STAT_AUX_DATA));
   if (read_int(storage, "health")) data->health = read_int(storage, "health");
+  if (read_int(storage, "current_health")) data->current_health = read_int(storage, "current_health");
   if (read_int(storage, "fatigue")) data->fatigue = read_int(storage, "fatigue");
+  if (read_int(storage, "current_fatigue")) data->current_fatigue = read_int(storage, "current_fatigue");
   if (read_int(storage, "strength")) data->strength = read_int(storage, "strength");
   if (read_int(storage, "endurance")) data->endurance = read_int(storage, "endurance");
   if (read_int(storage, "speed")) data->speed = read_int(storage, "speed");
@@ -679,6 +692,123 @@ void *pyCharSetFatigue(PyChar *self, PyObject *value, void *closure) {
   return NULL;
 }
 
+void charSetStat(CHAR_DATA *ch, const char *stat, int value) {
+  if ( 0 == strcmp("strength", stat) ) {
+    charSetStrength(ch, value);
+  }
+  if ( 0 == strcmp("endurance", stat) ) {
+    charSetEndurance(ch, value);
+  }
+  if ( 0 == strcmp("speed", stat) ) {
+    charSetSpeed(ch, value);
+  }
+  if ( 0 == strcmp("agility", stat) ) {
+    charSetAgility(ch, value);
+  }
+  if ( 0 == strcmp("focus", stat) ) {
+    charSetFocus(ch, value);
+  }
+  if ( 0 == strcmp("willpower", stat) ) {
+    charSetWillpower(ch, value);
+  }
+  if ( 0 == strcmp("wisdom", stat) ) {
+    charSetWisdom(ch, value);
+  }
+  if ( 0 == strcmp("charisma", stat) ) {
+    charSetCharisma(ch, value);
+  }
+}
+
+int charGetStatsTotal(CHAR_DATA *ch) {
+  return charGetStrength(ch) + charGetEndurance(ch) + charGetSpeed(ch) + charGetAgility(ch)
+    + charGetFocus(ch) + charGetWillpower(ch) + charGetWisdom(ch) + charGetCharisma(ch);
+}
+
+void charSortStats(CHAR_DATA *ch) {
+  int i, j, k;
+  
+  stats[0] = charGetStrength(ch);
+  stats[1] = charGetEndurance(ch);
+  stats[2] = charGetSpeed(ch);
+  stats[3] = charGetAgility(ch);
+  stats[4] = charGetWisdom(ch);
+  stats[5] = charGetFocus(ch);
+  stats[6] = charGetWillpower(ch);
+  stats[7] = charGetCharisma(ch);
+  names[0] = "strength";
+  names[1] = "endurance";
+  names[2] = "speed";
+  names[3] = "agility";
+  names[4] = "wisdom";
+  names[5] = "focus";
+  names[6] = "willpower";
+  names[7] = "charisma";
+  
+  // Now sort one array while keeping a second associative
+  // TODO Two dimensional array?
+  for (i = 1; i < 8; i++) {
+    k = i;
+    j = i - 1;
+    int temp_value = stats[k];
+	char *temp_name = names[k];
+    while (stats[j] > temp_value) {
+      stats[k] = stats[j];
+	  names[k] = names[j];
+      j--;
+      k--;
+    }
+    stats[k] = temp_value;
+	names[k] = temp_name;
+  }
+}
+
+COMMAND(cmd_sortstats) {
+  charSortStats(ch);
+}
+
+void checkStatsForChar(CHAR_DATA *ch) {
+  int too_high, too_low, too_many_excellents = 1;
+  int i, count = 0, excellents = 0;
+  do {  
+    charSortStats(ch);
+    // Check if character is within bounds
+    // Stats total value should be between 250 and 550
+    // Character should have no more then two 
+    if ( 550 < charGetStatsTotal(ch) ) {
+	  too_high = 1;
+      // Reduce down, this character is too good
+	  log_string("Character rolled with stats total too high - %s at %d", charGetName(ch), 
+	    charGetStatsTotal(ch));
+	  stats[7]--;
+	  charSetStat(ch, names[7], stats[7]);
+    } else too_high = 0;
+    for ( i = 0; i < 8; i++ ) {
+      if ( stats[i] > 90 ) excellents++;
+    }
+    if ( 2 < excellents ) {
+	  too_many_excellents = 1;
+      // Character is too good, remove an excellent
+	  log_string("Character rolled with greater then two excellents - %s at %d", charGetName(ch),
+	    excellents);
+	  stats[5]--;
+	  charSetStat(ch, names[5], stats[5]);
+    } else too_many_excellents = 0;
+    if ( 250 > charGetStatsTotal(ch) ) {
+	  too_low = 1;
+      // Boost up, this character blows
+	  log_string("Character rolled with stats total too low - %s at %d", charGetName(ch),
+	    charGetStatsTotal(ch));
+	  stats[0]++;
+	  charSetStat(ch, names[0], stats[0]);
+    } else too_low = 0;
+	count++;
+  } while ( (too_high || too_low || too_many_excellents) && 10 >= count );
+  if ( 10 <= count ) {
+    log_string("%s created out of bounds: %d %d %d %d %d %d %d %d", charGetName(ch), stats[0], stats[1], 
+	  stats[2], stats[3], stats[4], stats[5], stats[6], stats[7]);
+  }
+}
+
 void rollStatsForChar(CHAR_DATA *ch) { // If we add rerolls to character generator, this will move to Python
   charSetEndurance(ch, rand_range(1, 100));
   charSetHealth(ch, charGetMaxHealth(ch));
@@ -690,7 +820,8 @@ void rollStatsForChar(CHAR_DATA *ch) { // If we add rerolls to character generat
   charSetFocus(ch, rand_range(1, 100));
   charSetWillpower(ch, rand_range(1, 100));
   charSetCharisma(ch, rand_range(1, 100));
-  // TODO Fit these to rules
+  
+  checkStatsForChar(ch);
   
   // Set bonuses based on body type.
   const char *body_type = charGetBodyType(ch);
@@ -771,13 +902,13 @@ COMMAND(cmd_stats) {
   send_to_char(ch, "%s at age %s\r\n\r\n", "[marital_status]", "[age]");
   send_to_char(ch, "Health: %d/%d    Fatigue: %d/%d\r\n\r\n", 
     charGetHealth(ch), charGetMaxHealth(ch), charGetFatigue(ch), charGetMaxFatigue(ch));
-  send_to_char(ch, "Strength: %s            Endurance:     %s\r\n", 
+  send_to_char(ch, "Strength: %13s        Endurance: %13s\r\n", 
     charGetStrengthWord(ch), charGetEnduranceWord(ch));
-  send_to_char(ch, "Speed:    %s            Agility:       %s\r\n", 
+  send_to_char(ch, "Speed:    %13s        Agility:   %13s\r\n", 
     charGetSpeedWord(ch), charGetAgilityWord(ch));
-  send_to_char(ch, "Focus:    %s            Willpower:     %s\r\n", 
+  send_to_char(ch, "Focus:    %13s        Willpower: %13s\r\n", 
     charGetFocusWord(ch), charGetWillpowerWord(ch));
-  send_to_char(ch, "Wisdom:   %s            Charisma:      %s\r\n", 
+  send_to_char(ch, "Wisdom:   %13s        Charisma:  %13s\r\n", 
     charGetWisdomWord(ch), charGetCharismaWord(ch));
   send_to_char(ch, "-------------------------------------------------------\r\n");
 }
@@ -805,6 +936,7 @@ void init_stats(void) {
 	
   // Add the commands defined in this module to the game
   add_cmd("stats", NULL, cmd_stats, "player", FALSE);
+  //add_cmd("sortstats", NULL, cmd_sortstats, "player", FALSE);
   
   // Add Python getters and setters to PyChar object
   PyChar_addGetSetter("strength", pyCharGetStrength, pyCharSetStrength, "Manages character's strength");

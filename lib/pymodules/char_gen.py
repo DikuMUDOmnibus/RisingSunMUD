@@ -6,10 +6,6 @@ with basic selection for name, sex, and race.
 '''
 import mudsys, mud, socket, char, hooks
 
-def loadAuxiliaries(ch):
-    ch.aux_desc = ch.getAuxiliary("desc_aux_data")
-    ch.aux_stat = ch.getAuxiliary("stat_aux_data")
-
 def check_char_name(arg):
     '''checks to make sure the character name is valid. Names are valid if they
        are greater than 2 characters, less than 13, and comprise only alpha
@@ -59,7 +55,6 @@ def cg_race_handler(sock, arg):
         sock.pop_ih()
 
 def cg_body_handler(sock, arg):
-    #loadAuxiliaries(sock.ch)
     body_types = {
         '1': 'athletic',
         '2': 'average',
@@ -78,7 +73,6 @@ def cg_body_handler(sock, arg):
     sock.pop_ih()
 
 def cg_complexion_handler(sock, arg):
-    #loadAuxiliaries(sock.ch)
     complexions = {
         '1':  'pale',
         '2':  'fair',
@@ -96,7 +90,6 @@ def cg_complexion_handler(sock, arg):
     sock.pop_ih()
 
 def cg_eye_color_handler(sock, arg):
-    #loadAuxiliaries(sock.ch)
     eye_colors = {
         '1':  'obsidian',
         '2':  'ebony',
@@ -114,11 +107,10 @@ def cg_eye_color_handler(sock, arg):
         '14': 'azure',
         '15': 'blue',
         '16': 'dark blue' }
-    sock.ch.eye_color = eye_colors.get(arg, 8)
+    sock.ch.eye_color = eye_colors.get(arg, 'brown')
     sock.pop_ih()
 
 def cg_hair_color_handler(sock, arg):
-    #loadAuxiliaries(sock.ch)
     hair_colors = {
         '1':  'bald',
         '2':  'black',
@@ -144,7 +136,6 @@ def cg_hair_color_handler(sock, arg):
     sock.pop_ih()
 
 def cg_hair_length_handler(sock, arg):
-    #loadAuxiliaries(sock.ch)
     hair_lengths = {
         '1':  'short',
         '2':  'close-cropped',
@@ -155,7 +146,6 @@ def cg_hair_length_handler(sock, arg):
     sock.pop_ih()
 
 def cg_hair_texture_handler(sock, arg):
-    #loadAuxiliaries(sock.ch)
     hair_textures = {
         '1':  'billowy',
         '2':  'bouncy',
@@ -187,7 +177,6 @@ def cg_hair_texture_handler(sock, arg):
     sock.pop_ih()
 
 def cg_face_handler(sock, arg):
-    #loadAuxiliaries(sock.ch)
     faces = {
         '1':  'gentle',
         '2':  'freckled',
@@ -203,7 +192,6 @@ def cg_face_handler(sock, arg):
     sock.pop_ih()
 
 def cg_nose_handler(sock, arg):
-    #loadAuxiliaries(sock.ch)
     noses = {
         '1':  'large',
         '2':  'wide',
@@ -219,7 +207,6 @@ def cg_nose_handler(sock, arg):
     sock.pop_ih()
 
 def cg_lips_handler(sock, arg):
-    #loadAuxiliaries(sock.ch)
     lips = {
         '1':  'full',
         '2':  'thin',
@@ -233,7 +220,6 @@ def cg_lips_handler(sock, arg):
     sock.pop_ih()
 
 def cg_chin_handler(sock, arg):
-    #loadAuxiliaries(sock.ch)
     chins = {
         '1':  'cleft',
         '2':  'double',
@@ -247,7 +233,6 @@ def cg_chin_handler(sock, arg):
     sock.pop_ih()
 
 def cg_height_handler(sock, arg):
-    #loadAuxiliaries(sock.ch)
     heights = {
         '1':  'very short',
         '2':  'short',

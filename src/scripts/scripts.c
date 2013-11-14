@@ -413,28 +413,40 @@ PyObject *mud_script_dict(void) {
     if(exit != NULL) PyDict_SetItemString(dict, "exit", exit);
     if(exit != NULL) PyDict_SetItemString(dict, "end_script", exit);
     Py_DECREF(sys);
-  }
+  } 
   
   // merge all of the mud module contents with our current dict
   PyObject *mudmod = PyImport_ImportModule("mud");
-  PyDict_Update(dict, PyModule_GetDict(mudmod));
-  Py_DECREF(mudmod);
+  if (mudmod != NULL) {
+    PyDict_Update(dict, PyModule_GetDict(mudmod));
+	Py_DECREF(mudmod);
+  } 
+  
   mudmod = PyImport_ImportModule("char");
-  PyDict_Update(dict, PyModule_GetDict(mudmod));
-  Py_DECREF(mudmod);
+  if (mudmod != NULL) {
+    PyDict_Update(dict, PyModule_GetDict(mudmod));
+    Py_DECREF(mudmod);
+  }
   mudmod = PyImport_ImportModule("room");
-  PyDict_Update(dict, PyModule_GetDict(mudmod));
-  Py_DECREF(mudmod);
+  if (mudmod) {
+    PyDict_Update(dict, PyModule_GetDict(mudmod));
+    Py_DECREF(mudmod);
+  }
   mudmod = PyImport_ImportModule("obj");
-  PyDict_Update(dict, PyModule_GetDict(mudmod));
-  Py_DECREF(mudmod);
+  if (mudmod) {
+    PyDict_Update(dict, PyModule_GetDict(mudmod));
+    Py_DECREF(mudmod);
+  }
   mudmod = PyImport_ImportModule("event");
-  PyDict_Update(dict, PyModule_GetDict(mudmod));
-  Py_DECREF(mudmod);
+  if (mudmod) {
+    PyDict_Update(dict, PyModule_GetDict(mudmod));
+    Py_DECREF(mudmod);
+  }
   mudmod = PyImport_ImportModule("random");
-  PyDict_SetItemString(dict, "random", mudmod);
-  Py_DECREF(mudmod);
-
+  if (mudmod) {
+    PyDict_SetItemString(dict, "random", mudmod);
+    Py_DECREF(mudmod);
+  }
   return dict;
 }
 

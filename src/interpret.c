@@ -341,10 +341,10 @@ void do_cmd(CHAR_DATA *ch, char *arg, bool aliases_ok)  {
     else if(cmd != NULL) {
       // execute the command
       if((ret = charTryCmd(ch, cmd, arg)) != -1) {
-	if(ret == TRUE)
-	  hookRun("command",hookBuildInfo("ch str str",ch,cmdGetName(cmd),arg));
-	found = TRUE;
-	break;
+		if(ret == TRUE)
+		hookRun("command",hookBuildInfo("ch str str",ch,cmdGetName(cmd),arg));
+		found = TRUE;
+	    break;
       }
     }
   }
