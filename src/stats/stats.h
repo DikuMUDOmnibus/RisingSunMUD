@@ -6,6 +6,10 @@ void init_stats(void);
 
 // This function sets character's health
 void charSetHealth(const CHAR_DATA *, int);
+void charSetFatigue(const CHAR_DATA *, int);
 
 int charGetHealth(const CHAR_DATA *);
+int charGetMaxHealth(const CHAR_DATA *);
+int charGetFatigue(const CHAR_DATA *);
+int charGetMaxFatigue(const CHAR_DATA *);
 #endif // STATS_H

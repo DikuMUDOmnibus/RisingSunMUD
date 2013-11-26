@@ -19,8 +19,9 @@
 #include "room.h"
 #include "storage.h"
 #include "save.h"
+#include "event.h"
 
-
+#define SAVE_DELAY 5
 
 //*****************************************************************************
 // local data structures and variables
@@ -218,6 +219,9 @@ ACCOUNT_DATA *load_account(const char *account) {
   }
 }
 
+void autosave(void *owner, void *unused, void *not_used) {
+  log_string("Forcing a save, suckers!");
+}
 
 //*****************************************************************************
 // implementation of save.h
@@ -225,6 +229,7 @@ ACCOUNT_DATA *load_account(const char *account) {
 void init_save(void) {
   account_table = newHashtable();
   player_table  = newHashtable();
+  start_update( NULL, SAVE_DELAY MINUTES, autosave, NULL, NULL, NULL );
 }
 
 ACCOUNT_DATA *get_account(const char *account) {

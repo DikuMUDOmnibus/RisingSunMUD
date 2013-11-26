@@ -11,6 +11,7 @@
 #include "../world.h"
 #include "../room_reset.h"
 #include "../inform.h"
+#include "../save.h"
 
 #include "buildwalk.h"
 
@@ -159,6 +160,14 @@ void tryBuildwalk(const char *info) {
   }
 }
 
+void buildwalkOff(const char *hook_info) {
+  CHAR_DATA *ch = NULL;
+  hookParseInfo(hook_info, &ch);
+  BUILDWALK_AUX_DATA *data = charGetAuxiliaryData(ch, "buildwalk_aux_data");
+  bufferClear(data->prototype);
+  save_player(ch);
+}
+
 COMMAND(cmd_buildwalk) {
   BUILDWALK_AUX_DATA *data = charGetAuxiliaryData(ch, "buildwalk_aux_data");
   if ( 0 != strcmp("", arg) ) {
@@ -185,4 +194,5 @@ void init_buildwalk(void) {
 	
   // Hook into movement
   hookAdd("try_buildwalk", tryBuildwalk);
+  hookAdd("char_from_game", buildwalkOff);
 }

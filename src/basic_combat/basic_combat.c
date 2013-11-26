@@ -6,8 +6,12 @@
 #include "../action.h"
 #include "../storage.h"
 #include "../set_val/set_val.h"
+#include "../hooks.h"
+#include "../event.h"
 
 #include "basic_combat.h"
+
+#define HEAL_PULSE_RATE 5
 
 typedef struct {
   int busy;
@@ -56,19 +60,13 @@ COMBAT_AUX_DATA *readCombatAuxData(STORAGE_SET *storage) {
 }
 
 int charIsBusy(CHAR_DATA *ch) {
-  COMBAT_AUX_DATA *data = charGetAuxiliaryData(ch, "combat_aux_data");
-  return data->busy;
+  //COMBAT_AUX_DATA *data = charGetAuxiliaryData(ch, "combat_aux_data");
+  //return data->busy;
+  return is_acting(ch, 1);
 }
 
-void actionSetBusyForChar(CHAR_DATA *ch, int *value, int unused) {
-  log_string("Setting busy for %s to %d", charGetName(ch), *value);
-  charSetBusy(ch, *value);
-}
-
-void charSetBusy(CHAR_DATA *ch, int value) {
-  COMBAT_AUX_DATA *data = charGetAuxiliaryData(ch, "combat_aux_data");
-  data->busy = value;
-  log_string("%s now has a busy value of %d", charGetName(ch), value);
+void charNoLongerBusy(CHAR_DATA *ch, int unused, int not_used) {
+  send_to_char(ch, "{WYou are no longer busy.{n");
 }
 
 void actionInterupt(CHAR_DATA *owner, int data, const char *arg) {
@@ -76,38 +74,79 @@ void actionInterupt(CHAR_DATA *owner, int data, const char *arg) {
 }
 
 int damageChar(CHAR_DATA *ch, int amount) {
-  charSetHealth(ch, charGetHealth(ch) - 10);
-  return 10;
+  charSetHealth(ch, charGetHealth(ch) - amount);
+  //save_player(ch);
+  return amount;
+}
+
+int healChar(CHAR_DATA *ch, int amount) {
+  if ( charGetHealth(ch) != charGetMaxHealth(ch) ) {
+    if ( charGetHealth(ch) + amount <= charGetMaxHealth(ch) ) {
+	  charSetHealth( ch, charGetHealth(ch) + amount );
+	} else {
+	  charSetHealth( ch, charGetMaxHealth(ch) );
+	}
+  }
+  //save_player(ch);
+  return amount;
+}
+
+int fatigueChar(CHAR_DATA *ch, int amount ) {
+  charSetFatigue(ch, charGetFatigue(ch) - amount);
+  //save_player(ch);
+  return amount;
+}
+
+int restChar(CHAR_DATA *ch, int amount ) {
+  if ( charGetFatigue(ch) != charGetMaxFatigue(ch) ) {
+    if ( charGetFatigue(ch) + amount <= charGetMaxFatigue(ch) ) {
+	  charSetFatigue( ch, charGetFatigue(ch) + amount );
+	} else {
+	  charSetFatigue( ch, charGetMaxFatigue(ch) );
+	}
+  }
+  //save_player(ch);
+  return amount;
+}
+
+void event_heal(CHAR_DATA *ch, void *data, const char *arg) {
+  //log_string("Healing %s for %d health.", charGetName(ch), health);
+  int max_health = charGetMaxHealth(ch);
+  int pulse_health = floor( max_health * 0.08 );
+  healChar(ch, pulse_health);
+  int max_fatigue = charGetMaxFatigue(ch);
+  int pulse_fatigue = floor( max_fatigue * 0.08 );
+  restChar(ch, pulse_fatigue);
+}
+
+void regenStartHook(const char *hook_info) {
+  CHAR_DATA *ch = NULL;
+  hookParseInfo(hook_info, &ch);
+  //log_string("Hooked character entry, starting regen for %s.", charGetName(ch));
+  start_update(ch, HEAL_PULSE_RATE SECONDS, event_heal, NULL, NULL, NULL);
 }
 
 COMMAND(cmd_attack) {
-  CHAR_DATA *target = get_player(arg);
-  log_string("%s is attempting to attack %s.", charGetName(ch), arg);
-  if ( target && !charIsBusy(ch) ) {
+  char arg_to_parse[SMALL_BUFFER];
+  CHAR_DATA *target = NULL;
+  strcpy(arg_to_parse, arg);
+  if ( parse_args(ch, TRUE, "attack", arg_to_parse, "ch.room", &target ) && !charIsBusy(ch) ) {
+    //target = get_player(arg);
+    log_string("%s is attempting to attack %s.", charGetName(ch), arg);
     log_string("%s is attacking %s!", charGetName(ch), charGetName(target));
     damageChar(target, 10);
+	fatigueChar(ch, 10);
     send_to_char(ch, "You attack %s.\n\r", charGetName(target));
-    send_to_char(target, "%s visciously attacks you!\r\n", charGetName(ch));
+    send_to_char(target, "{r%s visciously attacks you!{n\r\n", charGetName(ch));
 	int duration = 5;
-	// TODO FINISH THIS
-	charSetBusy(ch, 1);
-	int notBusy = 0;
-	start_action(ch, duration SECONDS, 1, actionSetBusyForChar, actionInterupt, &notBusy, NULL);
-  } else if ( target && charIsBusy(ch) )  {
+	start_action(ch, duration SECONDS, 1, charNoLongerBusy, actionInterupt, NULL, NULL);
+  } else if ( charIsBusy(ch) ) {
     send_to_char(ch, "You are busy.");
-  } else {
-    send_to_char(ch, "Who?");
   }
 }
 
 void init_basic_combat(void) {
-  auxiliariesInstall("combat_aux_data",
-    newAuxiliaryFuncs(AUXILIARY_TYPE_CHAR,
-    newCombatAuxData, deleteCombatAuxData,
-    copyCombatAuxData, duplicateCombatAuxData,
-    storeCombatAuxData, readCombatAuxData));
-	
-  add_set("busy", SET_CHAR, SET_TYPE_INT, charSetBusy, NULL);
+  hookAdd("char_to_game", regenStartHook);
 	
   add_cmd("attack", NULL, cmd_attack, "player", FALSE);
 }

@@ -358,7 +358,7 @@ void charSetMaxFatigue(CHAR_DATA *ch, int fatigue) {
 
 void charSetStrength(CHAR_DATA *ch, int strength) {
   STAT_AUX_DATA *stats = charGetAuxiliaryData(ch, "stat_aux_data");
-  if (1<=strength && 100>=strength){  
+  if ( 1<=strength && (100>=strength || bitIsOneSet(charGetUserGroups(ch), "wizard")) ) {  
 	stats->strength = strength;
   } else if (1>strength) {
     stats->strength = 1;
@@ -369,7 +369,7 @@ void charSetStrength(CHAR_DATA *ch, int strength) {
 
 void charSetEndurance(CHAR_DATA *ch, int endurance) {
   STAT_AUX_DATA *stats = charGetAuxiliaryData(ch, "stat_aux_data");
-  if (1<=endurance && 100>=endurance){  
+  if (1<=endurance && (100>=endurance || bitIsOneSet(charGetUserGroups(ch), "wizard")) ) {  
 	stats->endurance = endurance;
   } else if (1>endurance) {
     stats->endurance = 1;
@@ -382,7 +382,7 @@ void charSetEndurance(CHAR_DATA *ch, int endurance) {
 
 void charSetSpeed(CHAR_DATA *ch, int speed) {
   STAT_AUX_DATA *stats = charGetAuxiliaryData(ch, "stat_aux_data");
-  if (1<=speed && 100>=speed){  
+  if (1<=speed && (100>=speed || bitIsOneSet(charGetUserGroups(ch), "wizard")) ){  
 	stats->speed = speed;
   } else if (1>speed) {
     stats->speed = 1;
@@ -393,7 +393,7 @@ void charSetSpeed(CHAR_DATA *ch, int speed) {
 
 void charSetAgility(CHAR_DATA *ch, int agility) {
   STAT_AUX_DATA *stats = charGetAuxiliaryData(ch, "stat_aux_data");
-  if (1<=agility && 100>=agility){  
+  if (1<=agility && (100>=agility || bitIsOneSet(charGetUserGroups(ch), "wizard"))){  
 	stats->agility = agility;
   } else if (1>agility) {
     stats->agility = 1;
@@ -404,7 +404,7 @@ void charSetAgility(CHAR_DATA *ch, int agility) {
 
 void charSetWisdom(CHAR_DATA *ch, int wisdom) {
   STAT_AUX_DATA *stats = charGetAuxiliaryData(ch, "stat_aux_data");
-  if (1<=wisdom && 100>=wisdom){  
+  if (1<=wisdom && (100>=wisdom || bitIsOneSet(charGetUserGroups(ch), "wizard"))){  
 	stats->wisdom = wisdom;
   } else if (1>wisdom) {
     stats->wisdom = 1;
@@ -415,7 +415,7 @@ void charSetWisdom(CHAR_DATA *ch, int wisdom) {
 
 void charSetFocus(CHAR_DATA *ch, int focus) {
   STAT_AUX_DATA *stats = charGetAuxiliaryData(ch, "stat_aux_data");
-  if (1<=focus && 100>=focus){  
+  if (1<=focus && (100>=focus || bitIsOneSet(charGetUserGroups(ch), "wizard"))){  
 	stats->focus = focus;
   } else if (1>focus) {
     stats->focus = 1;
@@ -426,7 +426,7 @@ void charSetFocus(CHAR_DATA *ch, int focus) {
 
 void charSetWillpower(CHAR_DATA *ch, int willpower) {
   STAT_AUX_DATA *stats = charGetAuxiliaryData(ch, "stat_aux_data");
-  if (1<=willpower && 100>=willpower){  
+  if (1<=willpower && (100>=willpower || bitIsOneSet(charGetUserGroups(ch), "wizard"))) {  
 	stats->willpower = willpower;
   } else if (1>willpower) {
     stats->willpower = 1;
@@ -437,7 +437,7 @@ void charSetWillpower(CHAR_DATA *ch, int willpower) {
 
 void charSetCharisma(CHAR_DATA *ch, int charisma) {
   STAT_AUX_DATA *stats = charGetAuxiliaryData(ch, "stat_aux_data");
-  if (1<=charisma && 100>=charisma){  
+  if (1<=charisma && (100>=charisma || bitIsOneSet(charGetUserGroups(ch), "wizard"))) {  
 	stats->charisma = charisma;
   } else if (1>charisma) {
     stats->charisma = 1;
