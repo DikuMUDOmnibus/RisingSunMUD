@@ -218,5 +218,5 @@ pip-log.txt
 ## NakedMUD
 #############
 
-pfiles/*
-world/*
+lib/pfiles/*
+lib/world/*

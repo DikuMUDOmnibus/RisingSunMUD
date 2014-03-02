@@ -20,6 +20,7 @@
 #include "storage.h"
 #include "save.h"
 #include "event.h"
+#include "list.h"
 
 #define SAVE_DELAY 5
 
@@ -220,7 +221,17 @@ ACCOUNT_DATA *load_account(const char *account) {
 }
 
 void autosave(void *owner, void *unused, void *not_used) {
-  log_string("Forcing a save, suckers!");
+  LIST_ITERATOR *ch_i = newListIterator(mobile_list);
+  CHAR_DATA       *ch = NULL;
+  ITERATE_LIST(ch, ch_i) {
+    if ( !charIsNPC(ch) ) {
+      save_player(ch);
+	  if ( !charGetSocket(ch) ) {
+	    extract_mobile(ch);
+	  }
+	}
+  }
+  deleteListIterator(ch_i);
 }
 
 //*****************************************************************************
