@@ -14,7 +14,7 @@
 CC = gcc
 
 # the name of the binary file created that you will run to start your mud
-BINARY  := RisingSun
+BINARY  := RisingSun 
 
 # the name of the project - essentially, the executable sans capital letters
 PROJECT := $(shell echo $(BINARY) | tr A-Z a-z)
