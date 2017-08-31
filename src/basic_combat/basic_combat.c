@@ -112,7 +112,6 @@ int restChar(CHAR_DATA *ch, int amount) {
 void event_heal(CHAR_DATA *ch, void *data, const char *arg) {
     int max_health = charGetMaxHealth(ch);
     int pulse_health = floor(max_health * 0.08);
-    log_string("Healing %s for %d health.", charGetName(ch), pulse_health);
     healChar(ch, pulse_health);
     int max_fatigue = charGetMaxFatigue(ch);
     int pulse_fatigue = floor(max_fatigue * 0.08);
