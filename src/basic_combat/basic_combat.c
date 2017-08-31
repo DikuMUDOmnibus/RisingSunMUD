@@ -110,7 +110,7 @@ int restChar(CHAR_DATA *ch, int amount ) {
 }
 
 void event_heal(CHAR_DATA *ch, void *data, const char *arg) {
-  //log_string("Healing %s for %d health.", charGetName(ch), health);
+  log_string("Healing %s for %d health.", charGetName(ch), health);
   int max_health = charGetMaxHealth(ch);
   int pulse_health = floor( max_health * 0.08 );
   healChar(ch, pulse_health);

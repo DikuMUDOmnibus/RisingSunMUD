@@ -20,9 +20,9 @@ def main(argv = sys.argv[1:]):
     handles the autorunning of the mud. Can accept 1 optional argument that
     specifies the port number to run under
     '''
-    restart_delay = 5     # how long do we delay before a restart (seconds)
-    path = './NakedMud'   # the path to the MUD binary
-    port = 4000           # the default port we will be running the MUD under
+    restart_delay = 5      # how long do we delay before a restart (seconds)
+    path = './RisingSun'   # the path to the MUD binary
+    port = 3000            # the default port we will be running the MUD under
 
     # parse out our port number if one was supplied
     if len(argv) > 0:

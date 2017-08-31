@@ -1,5 +1,6 @@
 lib/players/
 lib/accounts/
+log/
 src/**/*.o
 src/**/*.d
 src/RisingSun
