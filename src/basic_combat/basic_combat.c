@@ -111,10 +111,10 @@ int restChar(CHAR_DATA *ch, int amount) {
 
 void event_heal(CHAR_DATA *ch, void *data, const char *arg) {
     int max_health = charGetMaxHealth(ch);
-    int pulse_health = floor(max_health * 0.08);
+    int pulse_health = floor(max_health * 0.01);
     healChar(ch, pulse_health);
     int max_fatigue = charGetMaxFatigue(ch);
-    int pulse_fatigue = floor(max_fatigue * 0.08);
+    int pulse_fatigue = floor(max_fatigue * 0.01);
     restChar(ch, pulse_fatigue);
 }
 
@@ -130,8 +130,6 @@ COMMAND(cmd_attack) {
     CHAR_DATA *target = NULL;
     strcpy(arg_to_parse, arg);
     if (parse_args(ch, TRUE, "attack", arg_to_parse, "ch.room", &target) && !charIsBusy(ch)) {
-        //target = get_player(arg);
-        log_string("%s is attempting to attack %s.", charGetName(ch), arg);
         log_string("%s is attacking %s!", charGetName(ch), charGetName(target));
         damageChar(target, 10);
         fatigueChar(ch, 10);
